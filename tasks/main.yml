@@ -1,0 +1,30 @@
+---
+
+- name: Get syslog service name
+  shell: ls /etc/*syslog*.conf | sed 's/\/etc\///g' | sed 's/.conf//g'
+  register: syslog_service_name                                                                                                      
+  changed_when: syslog_service_name is not defined
+
+- block:
+   - name: Update hostname on the fly with FQDN
+     hostname:
+      name: "{{ inventory_hostname }}"
+     notify:
+      - syslog restart
+
+#   - name: Update /etc/hostname
+#     copy:
+#      content: "{{ inventory_hostname }}"
+#      dest: /etc/hostname
+#      owner: root
+#      group: root
+#      mode: 0644
+#     notify:
+#      - syslog restart
+
+  when: ansible_fqdn != "{{ inventory_hostname }}"
+
+- name: Include OS pecific tasks
+  include: "{{ item }}"
+  with_first_found:
+   - "{{ ansible_os_family }}.yml"

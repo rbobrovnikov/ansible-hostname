@@ -1,0 +1,6 @@
+---
+
+- name: syslog restart
+  service:
+   name: "{{ syslog_service_name.stdout }}" 
+   state: restarted
