@@ -2,5 +2,6 @@
 
 - name: syslog restart
   service:
-   name: "{{ syslog_service_name.stdout }}" 
+#   name: "{{ syslog_service_name.stdout }}" 
+   name: rsyslog 
    state: restarted
